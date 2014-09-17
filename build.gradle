@@ -1,8 +1,19 @@
+import org.gradle.api.publish.maven.MavenPublication
+
+plugins { id 'com.jfrog.bintray' version '0.5' }
+
 apply plugin: 'eclipse'
 apply plugin: 'groovy'
 apply plugin: 'maven-publish'
 
+group = 'net.praqma.gradle'
 version = '0.1'
+ext {
+	pluginId = 'net.praqma.customgradledistribution'
+	artifact = 'custom-gradle-dist-plugin'
+}
+
+assert file("src/main/resources/META-INF/gradle-plugins/${pluginId}.properties").exists()
 
 dependencies {
 	compile gradleApi()
@@ -12,9 +23,32 @@ dependencies {
 publishing {
 	publications {
 		mavenJava(MavenPublication) {
-			groupId 'net.praqma.gradle'
-			artifactId 'custom-gradle-dist-plugin'
+			artifactId artifact
+
 			from components.java
+		}
+	}
+}
+
+bintray {
+	user = "${bintrayUser}"
+	key = "${bintrayApiKey}"
+	publications = ['mavenJava']
+	dryRun = false //Whether to run this as dry-run, without deploying
+	publish = false //If version should be auto published after an upload
+	pkg {
+		repo = 'gradle-plugins'
+		userOrg = 'praqma'
+		name = pluginId
+		desc = 'Gradle plugin to create a customized Gradle distribution'
+		websiteUrl = 'https://github.com/Praqma/gradle-custom-dist-plugin'
+		vcsUrl = 'https://github.com/Praqma/gradle-custom-dist-plugin.git'
+		licenses = ['Apache-2.0']
+		publicDownloadNumbers = true
+		//Optional version descriptor
+		version {
+			name = version
+			attributes = ['gradle-plugin': "${pluginId}:${group}:${artifact}"]
 		}
 	}
 }

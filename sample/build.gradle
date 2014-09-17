@@ -11,7 +11,7 @@ buildscript {
 	dependencies { classpath 'net.praqma.gradle:custom-gradle-dist-plugin:0.1' }
 }
 
-apply plugin: 'net.praqma.custom-gradle-dist'
+apply plugin: 'net.praqma.customgradledistribution'
 
 customGradleDistribution {
 	baseDistribution = "https://services.gradle.org/distributions/gradle-2.1-bin.zip"
