@@ -7,7 +7,9 @@ apply plugin: 'groovy'
 apply plugin: 'maven-publish'
 
 group = 'net.praqma.gradle'
-version = '0.1'
+version = '0.3'
+description = 'Gradle plugin to create a customized Gradle distribution'
+
 ext {
 	pluginId = 'net.praqma.customgradledistribution'
 	artifact = 'custom-gradle-dist-plugin'
@@ -20,12 +22,22 @@ dependencies {
 	compile localGroovy()
 }
 
+task sourceJar(type: Jar) {
+	classifier 'sources'
+	from sourceSets.main.allSource
+}
+
 publishing {
 	publications {
 		mavenJava(MavenPublication) {
 			artifactId artifact
 
 			from components.java
+			artifact sourceJar
+
+			pom.withXml {
+				asNode().appendNode('description', project.description)
+			}
 		}
 	}
 }
@@ -35,19 +47,18 @@ bintray {
 	key = "${bintrayApiKey}"
 	publications = ['mavenJava']
 	dryRun = false //Whether to run this as dry-run, without deploying
-	publish = false //If version should be auto published after an upload
+	publish = true //If version should be auto published after an upload
 	pkg {
 		repo = 'gradle-plugins'
 		userOrg = 'praqma'
 		name = pluginId
-		desc = 'Gradle plugin to create a customized Gradle distribution'
+		desc = project.description
 		websiteUrl = 'https://github.com/Praqma/gradle-custom-dist-plugin'
 		vcsUrl = 'https://github.com/Praqma/gradle-custom-dist-plugin.git'
 		licenses = ['Apache-2.0']
 		publicDownloadNumbers = true
 		//Optional version descriptor
 		version {
-			name = version
 			attributes = ['gradle-plugin': "${pluginId}:${group}:${artifact}"]
 		}
 	}
