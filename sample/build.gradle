@@ -1,5 +1,5 @@
 // To execute this sample the plugin must be published to the local maven repo.
-// 
+//
 // To publish it execute: ./gradlew publishToLocalMavenRepo
 // in the plugin project directory
 //
@@ -8,20 +8,20 @@
 
 buildscript {
 	repositories { mavenLocal() }
-	dependencies { classpath 'net.praqma.gradle:custom-gradle-dist-plugin:0.1' }
+	dependencies { classpath 'net.praqma.gradle:custom-gradle-dist-plugin:0.4' }
 }
 
 apply plugin: 'net.praqma.customgradledistribution'
 
 customGradleDistribution {
-	baseDistribution = "https://services.gradle.org/distributions/gradle-2.1-bin.zip"
-
+	//baseDistribution = "https://services.gradle.org/distributions/gradle-2.1-bin.zip"
+	gradleVersion = '2.1'
+	
 	// Add message.gradle to init.d
 	into ('init.d') { from 'src/message.gradle' }
 
 	// Skip readme.txt in init.d
 	exclude 'init.d/readme.txt'
-	
 	// The customGradleDistribution task extends the standard Zip task, for more configuration options
 	// see http://www.gradle.org/docs/current/dsl/org.gradle.api.tasks.bundling.Zip.html
 }
