@@ -7,7 +7,7 @@ apply plugin: 'groovy'
 apply plugin: 'maven-publish'
 
 group = 'net.praqma.gradle'
-version = '0.5'
+version = '0.6'
 description = 'Gradle plugin to create a customized Gradle distribution'
 
 ext {
@@ -43,8 +43,11 @@ publishing {
 }
 
 bintray {
-	user = "${bintrayUser}"
-	key = "${bintrayApiKey}"
+	def readProperty = { project.hasProperty(it) ? project[it] : 'undefined' }
+
+	user = readProperty 'bintrayUser'
+	key = readProperty 'bintrayApiKey'
+
 	publications = ['mavenJava']
 	dryRun = false //Whether to run this as dry-run, without deploying
 	publish = true //If version should be auto published after an upload
